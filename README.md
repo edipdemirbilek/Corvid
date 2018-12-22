@@ -5,9 +5,5 @@ To allow reading Open Shifts related data from SumoLogic. You need to provide th
 ## How to Run:
 
 ```console
-python GetOpenShiftRequests.py <SUMO_ACCESS_ID> <SUMO_ACCESS_KEY>
-```
-
-```console
-python GetApplyOpenShift.py <SUMO_ACCESS_ID> <SUMO_ACCESS_KEY>
+python GetSumoLogicData.py <SUMO_ACCESS_ID> <SUMO_ACCESS_KEY>
 ```
