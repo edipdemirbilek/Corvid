@@ -13,7 +13,8 @@ from openshift.OpenShiftApply import OpenShiftApply
 
 class GetData:
 
-    def run(accesId, accessKey, out_dir, timestamp_dir):
+    def run(accesId, accessKey, out_dir, timestamp_dir,
+            remove_timestamp_files=False):
 
         # now in milliseconds
         now_timestamp = TimeUtil.get_current_milli_time()
@@ -25,8 +26,9 @@ class GetData:
         apply_filename = 'OpenShiftApply_'+str(now_timestamp)+".csv"
 
         # temporary: remove files
-        FileUtil.delete_if_exist(timestamp_dir+requests_timestamp_filename)
-        FileUtil.delete_if_exist(timestamp_dir+apply_timestamp_filename)
+        if remove_timestamp_files:
+            FileUtil.delete_if_exist(timestamp_dir+requests_timestamp_filename)
+            FileUtil.delete_if_exist(timestamp_dir+apply_timestamp_filename)
 
         # fromTime for open shift requests
         past_requests_timestamp = FileUtil.read_timestamp_or_deafult(
@@ -39,19 +41,28 @@ class GetData:
                 TimeUtil.get_past_milli_time(3))
 
         # get open shift requests and write to file
+        print("Gathering Open Shift Requests...")
         open_shift_requests = OpenShiftRequests(accesId, accessKey)
         open_shift_requests.get_sumologic_content(
                 past_requests_timestamp, now_timestamp, 1000)
+        print("Done gathering results.")
+
         open_shift_requests.write_response_to_file(out_dir+requests_filename)
+        print("Saved to "+out_dir+requests_filename)
 
         # get open shift apply and write to file
+        print("\nGathering Open Shift Apply...")
         open_shift_apply = OpenShiftApply(accesId, accessKey)
         open_shift_apply.get_sumologic_content(
                 past_apply_timestamp, now_timestamp, 1000)
+        print("Done gathering results.")
+
         open_shift_apply.write_response_to_file(out_dir+apply_filename)
+        print("Saved to "+out_dir+apply_filename)
 
         # write timestamps
         FileUtil.write_timestamp(timestamp_dir+requests_timestamp_filename,
                                  now_timestamp)
         FileUtil.write_timestamp(timestamp_dir+apply_timestamp_filename,
                                  now_timestamp)
+        print("\nUpdated time stamp files.")

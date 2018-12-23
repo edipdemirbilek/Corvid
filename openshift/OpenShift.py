@@ -38,7 +38,7 @@ class OpenShift(object):
             time.sleep(delay)
             status = self.sumo.search_job_status(sj)
 
-        print(status['state'])
+        # print(status['state'])
 
         if status['state'] == 'DONE GATHERING RESULTS':
             count = status['messageCount']
