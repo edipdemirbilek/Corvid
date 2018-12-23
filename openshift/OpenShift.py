@@ -12,12 +12,17 @@ from sumologic.SumoLogic import SumoLogic
 
 class OpenShift(object):
 
+    open_shift_response = ''
+
     def __init__(self, accesId, accessKey, query):
         self.sumo = SumoLogic(accesId, accessKey)
         self.q = query
 
-    def get(self, fromTime, toTime, limit=1, timeZone="EST",
-            byReceiptTime="false"):
+    def get_open_shift_response(self):
+        return self.open_shift_response
+
+    def get_sumologic_content(self, fromTime, toTime, limit=1, timeZone="EST",
+                              byReceiptTime="false"):
 
         LIMIT = limit
 
@@ -39,8 +44,7 @@ class OpenShift(object):
             count = status['messageCount']
             # compensate bad limit check
             limit = count if count < LIMIT and count != 0 else LIMIT
-            return self.sumo.search_job_messages(sj, limit=limit)
+            self.open_shift_response = \
+                self.sumo.search_job_messages(sj, limit=limit)
 
-
-
-
+            return self.open_shift_response

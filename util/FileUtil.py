@@ -8,7 +8,6 @@ Created on Sat Dec 22 20:23:21 2018
 from pathlib import Path
 import contextlib
 import os
-import json
 
 
 class FileUtil(object):
@@ -32,7 +31,3 @@ class FileUtil(object):
     def write_timestamp(self, filename, timestamp):
         with open(filename, 'w') as fp:
             fp.write(str(timestamp))
-
-    def write_json(self, filename, data):
-        with open(filename, 'w') as fp:
-            json.dump(data, fp, ensure_ascii=False)

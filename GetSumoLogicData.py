@@ -17,8 +17,8 @@ args = sys.argv
 requests_timestamp_filename = 'OpenShiftRequests.timestamp'
 apply_timestamp_filename = 'OpenShiftApply.timestamp'
 
-requests_filename = 'OpenShiftRequests.json'
-apply_filename = 'OpenShiftApply.json'
+requests_filename = 'OpenShiftRequests.csv'
+apply_filename = 'OpenShiftApply.csv'
 
 time_util = TimeUtil()
 file_util = FileUtil()
@@ -39,16 +39,16 @@ past_apply_timestamp = file_util.read_timestamp_or_deafult(
 now_timestamp = time_util.get_current_milli_time()
 
 # get open shift requests and write to file
-openShiftRequests = OpenShiftRequests(args[1], args[2])
-open_shift_requests_lines = openShiftRequests.get(
-        past_requests_timestamp, now_timestamp, 1)
-file_util.write_json(requests_filename, open_shift_requests_lines)
+open_shift_requests = OpenShiftRequests(args[1], args[2])
+open_shift_requests.get_sumologic_content(
+        past_requests_timestamp, now_timestamp, 1000)
+open_shift_requests.write_response_to_file(requests_filename)
 
 # get open shift apply and write to file
-openShiftapply = OpenShiftApply(args[1], args[2])
-open_shift_apply_lines = openShiftapply.get(
-        past_apply_timestamp, now_timestamp, 1)
-file_util.write_json(apply_filename, open_shift_apply_lines)
+open_shift_apply = OpenShiftApply(args[1], args[2])
+open_shift_apply.get_sumologic_content(
+        past_apply_timestamp, now_timestamp, 1000)
+open_shift_apply.write_response_to_file(apply_filename)
 
 # write timestamps
 file_util.write_timestamp(requests_timestamp_filename, now_timestamp)
