@@ -17,6 +17,9 @@ args = sys.argv
 requests_timestamp_filename = 'OpenShiftRequests.timestamp'
 apply_timestamp_filename = 'OpenShiftApply.timestamp'
 
+requests_filename = 'OpenShiftRequests.json'
+apply_filename = 'OpenShiftApply.json'
+
 time_util = TimeUtil()
 file_util = FileUtil()
 
@@ -35,17 +38,17 @@ past_apply_timestamp = file_util.read_timestamp_or_deafult(
 # now in milliseconds
 now_timestamp = time_util.get_current_milli_time()
 
-# get open shift requests
+# get open shift requests and write to file
 openShiftRequests = OpenShiftRequests(args[1], args[2])
 open_shift_requests_lines = openShiftRequests.get(
-        past_requests_timestamp, now_timestamp, 10)
-print(open_shift_requests_lines)
+        past_requests_timestamp, now_timestamp, 1)
+file_util.write_json(requests_filename, open_shift_requests_lines)
 
-# get open shift apply
+# get open shift apply and write to file
 openShiftapply = OpenShiftApply(args[1], args[2])
 open_shift_apply_lines = openShiftapply.get(
-        past_apply_timestamp, now_timestamp, 10)
-print(open_shift_apply_lines)
+        past_apply_timestamp, now_timestamp, 1)
+file_util.write_json(apply_filename, open_shift_apply_lines)
 
 # write timestamps
 file_util.write_timestamp(requests_timestamp_filename, now_timestamp)
