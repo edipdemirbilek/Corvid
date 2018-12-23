@@ -7,6 +7,7 @@ Created on Sat Dec 22 15:58:48 2018
 """
 import time
 
+
 class TimeUtil(object):
 
     def __init__(self):
@@ -16,4 +17,5 @@ class TimeUtil(object):
         return int(round(time.time() * 1000))
 
     def get_past_milli_time(self, num_days):
-        return self.get_current_milli_time() - (self.one_day_in_millis * num_days)
+        return self.get_current_milli_time() \
+                - (self.one_day_in_millis * num_days)
