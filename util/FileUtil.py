@@ -10,9 +10,9 @@ import contextlib
 import os
 
 
-class FileUtil(object):
+class FileUtil():
 
-    def read_timestamp_or_deafult(self, filename, past_time):
+    def read_timestamp_or_deafult(filename, past_time):
         config = Path(filename)
 
         if config.is_file():
@@ -24,10 +24,10 @@ class FileUtil(object):
 
         return past_time
 
-    def delete_if_exist(self, filename):
+    def delete_if_exist(filename):
         with contextlib.suppress(FileNotFoundError):
             os.remove(filename)
 
-    def write_timestamp(self, filename, timestamp):
+    def write_timestamp(filename, timestamp):
         with open(filename, 'w') as fp:
             fp.write(str(timestamp))
