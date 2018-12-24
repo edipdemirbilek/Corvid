@@ -35,12 +35,12 @@ class GetData:
         # fromTime for open shift requests
         past_requests_timestamp = FileUtil.read_timestamp_or_deafult(
                 sumologic_timestamp_dir+requests_timestamp_filename,
-                TimeUtil.get_past_milli_time(3))
+                TimeUtil.get_past_milli_time(1))
 
         # fromTime for open shift apply
         past_apply_timestamp = FileUtil.read_timestamp_or_deafult(
                 sumologic_timestamp_dir+apply_timestamp_filename,
-                TimeUtil.get_past_milli_time(3))
+                TimeUtil.get_past_milli_time(1))
 
         # get open shift requests and write to file
         print("Gathering Open Shift Requests...")

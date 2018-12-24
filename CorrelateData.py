@@ -10,7 +10,6 @@ from pyspark.sql.session import SparkSession
 
 from util.TimeUtil import TimeUtil
 from util.FileUtil import FileUtil
-from util.SparkUtil import SparkUtil
 
 
 class CorrelateData:
@@ -21,9 +20,6 @@ class CorrelateData:
             correlate_in_previous_cycle_dir,
             correlate_in_processed_dir,
             correlate_out_dir):
-
-        sc = SparkContext.getOrCreate()
-        spark = SparkSession(sc)
 
         # move correlate in previous cycle to correlate in processed
         FileUtil.move_files(correlate_in_previous_cycle_dir,
@@ -46,23 +42,52 @@ class CorrelateData:
                                      sumologic_out_processed_dir, "*.csv")
 
         # correlate apply with requests in current and previoud cycle
-        df_requests = SparkUtil.get_df_from_csv_dirs(correlate_in_current_cycle_dir,
+        df_requests = FileUtil.get_df_from_csv_dirs(correlate_in_current_cycle_dir,
                                                     correlate_in_previous_cycle_dir,
                                                     "Requests*")
-        # DataFrame[environment: string, operation: string, datetime: timestamp, loggedinuser: bigint, companyid: bigint, numberofopenshifts: int, eventandlocationids: string]
+#        print(df_requests.shape)
+#        print(df_requests.head())
 
-        #df_requests.createOrReplaceTempView("df_request_view")
-        #sql_way = spark.sql("""
-        #                  SELECT COUNT(*) FROM df_request_view
-        #                  """)
-        df_way = df_requests.count()
-        print(df_way)
-        # print(df_way.explain())
 
-        df_apply = SparkUtil.get_df_from_csv_dir(correlate_in_current_cycle_dir,
+#        for index, row in df_requests.iterrows():
+#            #print(row)
+#            datetime = row['datetime']
+#            loggedinuser = row['loggedinuser']
+#            companyid = row['companyid']
+#            numberofopenshifts = row['numberofopenshifts']
+#            eventandlocationids = row['eventandlocationids']
+#
+#            if (numberofopenshifts > 1):
+#                print("BINGO " + str(numberofopenshifts))
+
+        df_apply = FileUtil.get_df_from_csv_dir(correlate_in_current_cycle_dir,
                                                     "Apply*")
-        # DataFrame[environment: string, operation: string, datetime: timestamp, loggedinuser: bigint, companyid: bigint, locationid: bigint, eventid: string]
-        df_way = df_apply.count()
-        print(df_way)
+#        print(df_apply.shape)
+#        print(df_apply.head())
+
+        for index, row in df_apply.iterrows():
+
+            datetime = row['datetime']
+            loggedinuser = row['loggedinuser']
+            companyid = row['companyid']
+            locationid = row['locationid']
+            eventid = row['eventid']
+
+            df_filtered = df_requests.loc[
+                    (df_requests['loggedinuser'] == loggedinuser) &
+                    (df_requests['companyid'] == companyid) &
+                    (df_requests['datetime'] < datetime) &
+                    (df_requests['eventandlocationids'].str.contains(str(eventid)+","+str(locationid)))
+                    ].drop_duplicates().sort_values(by=['datetime'], ascending=False).head(1)
+
+            #if (df_filtered.iloc[0]['numberofopenshifts'] > 1):
+            print("\nloggedinuser: ", loggedinuser)
+            print("companyid: ", companyid)
+            print("datetime: ", datetime)
+            print("locationid: ", locationid)
+            print("eventid: ", eventid)
+            print("numberofopenshifts: ", df_filtered.iloc[0]['numberofopenshifts'])
+            print("eventandlocationids: ", df_filtered.iloc[0]['eventandlocationids'])
+
 
         # write correlated data to correlate out dir with timestamp

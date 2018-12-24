@@ -8,9 +8,9 @@ Created on Sat Dec 22 20:23:21 2018
 from pathlib import Path
 import contextlib
 import os
-import glob, shutil
-from pyspark.context import SparkContext
-from pyspark.sql.session import SparkSession
+import glob
+import shutil
+import pandas as pd
 
 
 class FileUtil():
@@ -53,3 +53,15 @@ class FileUtil():
             if os.path.isfile(file):
                 shutil.copy(file, dst_copy_dir)
                 shutil.move(file, dst_move_dir)
+
+    def get_df_from_csv_dirs(dir1, dir2, file_name_filter):
+        return pd.concat([FileUtil.get_df_from_csv_dir(dir1, file_name_filter),
+                          FileUtil.get_df_from_csv_dir(dir1, file_name_filter)],
+                    ignore_index=True)
+
+    def get_df_from_csv_dir(dir1, file_name_filter):
+        # glob.glob('data*.csv') - returns List[str]
+        # pd.read_csv(f) - returns pd.DataFrame()
+        # for f in glob.glob() - returns a List[DataFrames]
+        # pd.concat() - returns one pd.DataFrame()
+        return pd.concat([pd.read_csv(f) for f in glob.glob(dir1+file_name_filter)], ignore_index = True)
