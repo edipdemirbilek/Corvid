@@ -19,11 +19,11 @@ class GetData:
         # now in milliseconds
         now_timestamp = TimeUtil.get_current_milli_time()
 
-        requests_timestamp_filename = 'OpenShiftRequests.timestamp'
-        apply_timestamp_filename = 'OpenShiftApply.timestamp'
+        requests_timestamp_filename = 'Requests.timestamp'
+        apply_timestamp_filename = 'Apply.timestamp'
 
-        requests_filename = 'OpenShiftRequests_'+str(now_timestamp)+".csv"
-        apply_filename = 'OpenShiftApply_'+str(now_timestamp)+".csv"
+        requests_filename = 'Requests_'+str(now_timestamp)+".csv"
+        apply_filename = 'Apply_'+str(now_timestamp)+".csv"
 
         # temporary: remove files
         if remove_timestamp_files:

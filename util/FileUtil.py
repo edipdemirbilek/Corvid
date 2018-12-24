@@ -8,6 +8,9 @@ Created on Sat Dec 22 20:23:21 2018
 from pathlib import Path
 import contextlib
 import os
+import glob, shutil
+from pyspark.context import SparkContext
+from pyspark.sql.session import SparkSession
 
 
 class FileUtil():
@@ -31,3 +34,22 @@ class FileUtil():
     def write_timestamp(filename, timestamp):
         with open(filename, 'w') as fp:
             fp.write(str(timestamp))
+
+    def move_files(src_dir, dst_dir, file_name_filter):
+        files = glob.iglob(os.path.join(src_dir, file_name_filter))
+        for file in files:
+            if os.path.isfile(file):
+                shutil.move(file, dst_dir)
+
+    def copy_files(src_dir, dst_dir, file_name_filter):
+        files = glob.iglob(os.path.join(src_dir, file_name_filter))
+        for file in files:
+            if os.path.isfile(file):
+                shutil.copy(file, dst_dir)
+
+    def copy_and_nove_files(src_dir, dst_copy_dir, dst_move_dir, file_name_filter):
+        files = glob.iglob(os.path.join(src_dir, file_name_filter))
+        for file in files:
+            if os.path.isfile(file):
+                shutil.copy(file, dst_copy_dir)
+                shutil.move(file, dst_move_dir)
