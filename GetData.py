@@ -45,26 +45,24 @@ class GetData:
                 TimeUtil.get_past_milli_time(5))
 
         # get open shift requests and write to file
-        print("Gathering Open Shift Requests...")
+        print("Downloading Open Shift Requests from SumoLogic...")
         open_shift_requests = OpenShiftRequests(accesId, accessKey)
         open_shift_requests.get_sumologic_content(
                 past_requests_timestamp, now_timestamp, 10000)
-        print("Done gathering results.")
 
         open_shift_requests.write_response_to_file(
                 sumologic_out_dir+requests_filename)
-        print("Saved to "+sumologic_out_dir+requests_filename)
+        print("Complete. Results written to "+sumologic_out_dir+requests_filename)
 
         # get open shift apply and write to file
-        print("\nGathering Open Shift Apply...")
+        print("\nDownloading Apply to Open Shifts from SumoLogic...")
         open_shift_apply = OpenShiftApply(accesId, accessKey)
         open_shift_apply.get_sumologic_content(
                 past_apply_timestamp, now_timestamp, 10000)
-        print("Done gathering results.")
 
         open_shift_apply.write_response_to_file(
                 sumologic_out_dir+apply_filename)
-        print("Saved to "+sumologic_out_dir+apply_filename)
+        print("Complete. Results written to "+sumologic_out_dir+apply_filename)
 
         # write timestamps
         FileUtil.write_timestamp(

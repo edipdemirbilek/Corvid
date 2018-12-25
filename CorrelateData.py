@@ -6,6 +6,8 @@ Created on Sat Dec 22 15:52:23 2018
 @author: edip.demirbilek
 """
 import csv
+import re
+from ast import literal_eval as make_tuple
 
 from util.TimeUtil import TimeUtil
 from util.FileUtil import FileUtil
@@ -22,62 +24,33 @@ class CorrelateData:
         correlate_in_archive_dir = correlate_data_params["correlate_in_archive_dir"]
         correlate_out_dir = correlate_data_params["correlate_out_dir"]
 
-        # move correlate in previous cycle to correlate in processed
-        FileUtil.move_files(correlate_in_previous_cycle_dir,
-                            correlate_in_archive_dir, "*.csv")
-
-        # move correlate in current cycle (Apply) to
-        # correlate in processed cycle
-        FileUtil.move_files(correlate_in_current_cycle_dir,
-                            correlate_in_archive_dir, "Apply*")
-
-        # move correlate in current cycle (Requests) to
-        # correlate in previous cycle
-        FileUtil.move_files(correlate_in_current_cycle_dir,
-                            correlate_in_previous_cycle_dir, "Requests*")
-
-        # copy sumologic out to correlate in current cycle
-        # move sumologic out to sumologic out processed
-        FileUtil.copy_and_nove_files(sumologic_out_dir,
-                                     correlate_in_current_cycle_dir,
-                                     sumologic_out_archive_dir, "*.csv")
-#
         # now in milliseconds
         now_timestamp = TimeUtil.get_current_milli_time()
         correlate_filename = 'Correlate_'+str(now_timestamp)+".csv"
 
+        print("Loading Open Shift Requests from Filesystem...")
         # correlate apply with requests in current and previoud cycle
         df_requests = FileUtil.get_df_from_csv_dirs(correlate_in_current_cycle_dir,
                                                     correlate_in_previous_cycle_dir,
                                                     "Requests*")
-#        print(df_requests.shape)
-#        print(df_requests.head())
+        print("Complete. Count: " + str(df_requests.shape[0]))
 
-
-#        for index, row in df_requests.iterrows():
-#            #print(row)
-#            datetime = row['datetime']
-#            loggedinuser = row['loggedinuser']
-#            companyid = row['companyid']
-#            numberofopenshifts = row['numberofopenshifts']
-#            eventandlocationids = row['eventandlocationids']
-#
-#            if (numberofopenshifts > 1):
-#                print("BINGO " + str(numberofopenshifts))
-
+        print("\nLoading Apply to Open Shifts from Filesystem...")
         df_apply = FileUtil.get_df_from_csv_dir(correlate_in_current_cycle_dir,
                                                     "Apply*")
-#        print(df_apply.shape)
-#        print(df_apply.head())
+        print("Complete. Count: " + str(df_apply.shape[0]))
 
-        fields = ['datetime', 'loggedinuser', 'companyid', 'locationid',
-                      'numberofopenshifts', 'eventid', 'applied']
+        print("\nCorrelating Apply Open Shifts with Open Shifts Requests... ")
+
+        fields = ['loggedinuser', 'companyid',
+                  'query_datetime', 'apply_datetime', 'numberofopenshifts',
+                  'locationid', 'eventid', 'applied']
 
         CorrelateData.add_header(correlate_out_dir+correlate_filename, fields)
 
         for index, row in df_apply.iterrows():
 
-            datetime = row['datetime']
+            apply_datetime = row['datetime']
             loggedinuser = row['loggedinuser']
             companyid = row['companyid']
             locationid = row['locationid']
@@ -86,30 +59,37 @@ class CorrelateData:
             df_filtered = df_requests.loc[
                     (df_requests['loggedinuser'] == loggedinuser) &
                     (df_requests['companyid'] == companyid) &
-                    (df_requests['datetime'] < datetime) &
+                    (df_requests['datetime'] < apply_datetime) &
                     (df_requests['eventandlocationids'].str.contains(str(eventid)+","+str(locationid)))
                     ].drop_duplicates().sort_values(by=['datetime'], ascending=False).head(1)
 
-#            #if (df_filtered.iloc[0]['numberofopenshifts'] > 1):
-#            print("\nloggedinuser: ", loggedinuser)
-#            print("companyid: ", companyid)
-#            print("datetime: ", datetime)
-#            print("locationid: ", locationid)
-#            print("eventid: ", eventid)
-#            print("numberofopenshifts: ", df_filtered.iloc[0]['numberofopenshifts'])
-#            print("eventandlocationids: ", df_filtered.iloc[0]['eventandlocationids'])
+            # lets first get rid of ', ' and replace it with '|' and then split
+            # Example text: (3714cb1e-4839-4d8c-818e-9d01c655cd86,328038), (d87a2bb7-05e0-465e-8b6c-aa18d89a9c9f,328038), (e7bee5c5-8f4e-457f-95e7-b1ec82e8ab21,328038), (f04d14c1-68c3-4dda-8698-3d95eb3a4b9d,328038)
+            events_and_locations = df_filtered.iloc[0]['eventandlocationids'].replace(', ','|').split('|')
 
-            row = {'datetime': datetime,
-                   'loggedinuser': loggedinuser,
-                   'companyid': companyid,
-                   'locationid': locationid,
-                   'numberofopenshifts': df_filtered.iloc[0]['numberofopenshifts'],
-                   'eventid': eventid,
-                   'applied': True}
+            for event_location in events_and_locations:
 
-            CorrelateData.add_row(correlate_out_dir+correlate_filename, fields, row)
+                # lets get rid of paranthesis and split text by ','
+                # Example text: (3714cb1e-4839-4d8c-818e-9d01c655cd86,328038)
+                eventid_in_request, locationid_in_request = event_location.replace('(','').replace(')','').split(',')
 
-            # write rest
+                applied = False
+                if str(eventid) == str(eventid_in_request) and str(locationid) == str(locationid_in_request):
+                    applied = True
+
+                row = {'loggedinuser': loggedinuser,
+                       'companyid': companyid,
+                       'query_datetime': df_filtered.iloc[0]['datetime'],
+                       'apply_datetime': apply_datetime,
+                       'numberofopenshifts': df_filtered.iloc[0]['numberofopenshifts'],
+                       'locationid': locationid_in_request,
+                       'eventid': eventid_in_request,
+                       'applied': applied}
+
+                CorrelateData.add_row(correlate_out_dir+correlate_filename, fields, row)
+
+        print("Complete. Results written to: " + correlate_out_dir+correlate_filename)
+
 
     def add_header(filename, fields):
         with open(filename, 'w') as csv_file:
