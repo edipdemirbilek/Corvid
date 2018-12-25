@@ -5,5 +5,5 @@ To allow reading Open Shifts related data from SumoLogic. You need to provide th
 ## How to Run:
 
 ```console
-python GetSumoLogicData.py <SUMO_ACCESS_ID> <SUMO_ACCESS_KEY>
+python GetSumoLogicData.py <SUMO_ACCESS_ID> <SUMO_ACCESS_KEY> <WJ_ENV> <WJ_USERNAME> <WJ_PASSWORD>
 ```
