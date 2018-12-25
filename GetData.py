@@ -13,7 +13,7 @@ from openshift.OpenShiftApply import OpenShiftApply
 
 class GetData:
 
-    def run(accesId, accessKey, get_data_params, remove_timestamp_files=False):
+    def run(accesId, accessKey, env, get_data_params, remove_timestamp_files=False):
 
         sumologic_timestamp_dir = get_data_params["sumologic_timestamp_dir"]
         sumologic_out_dir = get_data_params["sumologic_out_dir"]

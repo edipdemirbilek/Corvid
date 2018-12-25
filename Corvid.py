@@ -14,17 +14,20 @@ from UpdateDataset import UpdateDataset
 
 
 args = sys.argv
+acces_id = args[1]
+access_key = args[2]
+env = args[3]
+username = args[4]
+password = args[5]
 
 print("\n############# STEP 1: GET DATA FROM SUMOLOGIC SERVER #############\n")
-accesId = args[1]
-accessKey = args[2]
 
 get_data_params = {}
 get_data_params["sumologic_timestamp_dir"] = 'data/sumologic/timestamp/'
 get_data_params["sumologic_out_dir"] = 'data/sumologic/out/'
 get_data_params["sumologic_out_archive_dir"] = 'data/sumologic/out/archive/'
 
-GetData.run(accesId, accessKey, get_data_params, remove_timestamp_files=True)
+# GetData.run(acces_id, access_key, env, get_data_params, remove_timestamp_files=True)
 
 print("\n############# STEP 2: CORRELATE DATA #############################\n")
 
@@ -35,7 +38,7 @@ correlate_data_params["correlate_in_archive_dir"] = 'data/corralete/in/archive/'
 correlate_data_params["correlate_out_dir"] = 'data/corralete/out/'
 correlate_data_params["correlate_out_archive_dir"] = 'data/corralete/out/archive/'
 
-CorrelateData.run(get_data_params, correlate_data_params)
+# CorrelateData.run(get_data_params, correlate_data_params)
 
 print("\n############# STEP 3: ENRICH DATA ################################\n")
 
@@ -45,13 +48,13 @@ enrich_data_params["enrich_in_archive_dir"] = 'data/enrich/in/archive/'
 enrich_data_params["enrich_out_dir"] = 'data/enrich/out'
 enrich_data_params["enrich_out_archive_dir"] = 'data/enrich/out/archive/'
 
-EnrichData.run(correlate_data_params, enrich_data_params)
+EnrichData.run(env, username, password, correlate_data_params, enrich_data_params)
 
 print("\n############# STEP 4: UPDATE DATASET #############################\n")
 
-enrich_dataset_params = {}
-enrich_dataset_params["update_in_dir"] = 'data/update/in/'
-enrich_dataset_params["update_in_archive_dir"] = 'data/update/in/archive/'
-enrich_dataset_params["update_out_dir"] = 'data/update/out/'
+update_dataset_params = {}
+update_dataset_params["update_in_dir"] = 'data/update/in/'
+update_dataset_params["update_in_archive_dir"] = 'data/update/in/archive/'
+update_dataset_params["update_out_dir"] = 'data/update/out/'
 
-UpdateDataset.run(enrich_data_params, enrich_dataset_params)
+UpdateDataset.run(enrich_data_params, update_dataset_params)
