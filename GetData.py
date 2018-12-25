@@ -13,8 +13,10 @@ from openshift.OpenShiftApply import OpenShiftApply
 
 class GetData:
 
-    def run(accesId, accessKey, sumologic_out_dir, sumologic_timestamp_dir,
-            remove_timestamp_files=False):
+    def run(accesId, accessKey, get_data_params, remove_timestamp_files=False):
+
+        sumologic_timestamp_dir = get_data_params["sumologic_timestamp_dir"]
+        sumologic_out_dir = get_data_params["sumologic_out_dir"]
 
         # now in milliseconds
         now_timestamp = TimeUtil.get_current_milli_time()
@@ -35,12 +37,12 @@ class GetData:
         # fromTime for open shift requests
         past_requests_timestamp = FileUtil.read_timestamp_or_deafult(
                 sumologic_timestamp_dir+requests_timestamp_filename,
-                TimeUtil.get_past_milli_time(1))
+                TimeUtil.get_past_milli_time(5))
 
         # fromTime for open shift apply
         past_apply_timestamp = FileUtil.read_timestamp_or_deafult(
                 sumologic_timestamp_dir+apply_timestamp_filename,
-                TimeUtil.get_past_milli_time(1))
+                TimeUtil.get_past_milli_time(5))
 
         # get open shift requests and write to file
         print("Gathering Open Shift Requests...")

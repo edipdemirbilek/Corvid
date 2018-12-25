@@ -19,11 +19,13 @@ from util.FileUtil import FileUtil
 
 class UpdateDataset:
 
-    def run(enrich_out_dir,
-            enrich_out_processed_dir,
-            update_in_dir,
-            update_in_processed_dir,
-            update_out_dir):
+    def run(enrich_data_params, enrich_dataset_params):
+
+        enrich_out_dir = enrich_data_params["enrich_out_dir"]
+        enrich_out_archive_dir = enrich_data_params["enrich_out_archive_dir"]
+        update_in_dir = enrich_dataset_params["update_in_dir"]
+        update_in_archive_dir = enrich_dataset_params["update_in_archive_dir"]
+        update_out_dir = enrich_dataset_params["update_out_dir"]
 
         # move update in to update processed
         # copy enrich out data to update in dir

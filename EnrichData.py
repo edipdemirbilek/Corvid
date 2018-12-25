@@ -11,11 +11,13 @@ from util.FileUtil import FileUtil
 
 class EnrichData:
 
-    def run(correlate_out_dir,
-            correlate_out_processed_dir,
-            enrich_in_dir,
-            enrich_in_processed_dir,
-            enrich_out_dir):
+    def run(correlate_data_params, enrich_data_params):
+
+        correlate_out_dir = correlate_data_params["correlate_out_dir"]
+        correlate_out_archive_dir = correlate_data_params["correlate_out_archive_dir"]
+        enrich_in_dir = enrich_data_params["enrich_in_dir"]
+        enrich_in_archive_dir = enrich_data_params["enrich_in_archive_dir"]
+        enrich_out_dir = enrich_data_params["enrich_out_dir"]
 
         # move enrich in to enrich in processed
         # copy correlate data out to enrich in
