@@ -72,30 +72,32 @@ class CorrelateData:
                     (df_requests['eventandlocationids'].str.contains(str(eventid)+","+str(locationid)))
                     ].drop_duplicates().sort_values(by=['datetime'], ascending=False).head(1)
 
-            # lets first get rid of ', ' and replace it with '|' and then split
-            # Example text: (3714cb1e-4839-4d8c-818e-9d01c655cd86,328038), (d87a2bb7-05e0-465e-8b6c-aa18d89a9c9f,328038), (e7bee5c5-8f4e-457f-95e7-b1ec82e8ab21,328038), (f04d14c1-68c3-4dda-8698-3d95eb3a4b9d,328038)
-            events_and_locations = df_filtered.iloc[0]['eventandlocationids'].replace(', ','|').split('|')
+            if df_filtered.shape[0] > 0:
 
-            for event_location in events_and_locations:
+                # lets first get rid of ', ' and replace it with '|' and then split
+                # Example text: (3714cb1e-4839-4d8c-818e-9d01c655cd86,328038), (d87a2bb7-05e0-465e-8b6c-aa18d89a9c9f,328038), (e7bee5c5-8f4e-457f-95e7-b1ec82e8ab21,328038), (f04d14c1-68c3-4dda-8698-3d95eb3a4b9d,328038)
+                events_and_locations = df_filtered.iloc[0]['eventandlocationids'].replace(', ','|').split('|')
 
-                # lets get rid of paranthesis and split text by ','
-                # Example text: (3714cb1e-4839-4d8c-818e-9d01c655cd86,328038)
-                eventid_in_request, locationid_in_request = event_location.replace('(','').replace(')','').split(',')
+                for event_location in events_and_locations:
 
-                applied = False
-                if str(eventid) == str(eventid_in_request) and str(locationid) == str(locationid_in_request):
-                    applied = True
+                    # lets get rid of paranthesis and split text by ','
+                    # Example text: (3714cb1e-4839-4d8c-818e-9d01c655cd86,328038)
+                    eventid_in_request, locationid_in_request = event_location.replace('(','').replace(')','').split(',')
 
-                row = {'loggedinuser': loggedinuser,
-                       'companyid': companyid,
-                       'query_datetime': df_filtered.iloc[0]['datetime'],
-                       'apply_datetime': apply_datetime,
-                       'numberofopenshifts': df_filtered.iloc[0]['numberofopenshifts'],
-                       'locationid': locationid_in_request,
-                       'eventid': eventid_in_request,
-                       'applied': applied}
+                    applied = False
+                    if str(eventid) == str(eventid_in_request) and str(locationid) == str(locationid_in_request):
+                        applied = True
 
-                CorrelateData.add_row(correlate_out_dir+correlate_filename, fields, row)
+                    row = {'loggedinuser': loggedinuser,
+                           'companyid': companyid,
+                           'query_datetime': df_filtered.iloc[0]['datetime'],
+                           'apply_datetime': apply_datetime,
+                           'numberofopenshifts': df_filtered.iloc[0]['numberofopenshifts'],
+                           'locationid': locationid_in_request,
+                           'eventid': eventid_in_request,
+                           'applied': applied}
+
+                    CorrelateData.add_row(correlate_out_dir+correlate_filename, fields, row)
 
         print("Complete. Results written to: {} \n".format(correlate_out_dir+correlate_filename))
 
