@@ -13,7 +13,7 @@ from openshift.OpenShiftApply import OpenShiftApply
 
 class GetData:
 
-    def run(accesId, accessKey, env, get_data_params, remove_timestamp_files=False):
+    def run(num_days, accesId, accessKey, env, get_data_params, remove_timestamp_files=False):
 
         sumologic_timestamp_dir = get_data_params["sumologic_timestamp_dir"]
         sumologic_out_dir = get_data_params["sumologic_out_dir"]
@@ -37,15 +37,15 @@ class GetData:
         # fromTime for open shift requests
         past_requests_timestamp = FileUtil.read_timestamp_or_deafult(
                 sumologic_timestamp_dir+requests_timestamp_filename,
-                TimeUtil.get_past_milli_time(5))
+                TimeUtil.get_past_milli_time(num_days))
 
         # fromTime for open shift apply
         past_apply_timestamp = FileUtil.read_timestamp_or_deafult(
                 sumologic_timestamp_dir+apply_timestamp_filename,
-                TimeUtil.get_past_milli_time(5))
+                TimeUtil.get_past_milli_time(num_days))
 
         # get open shift requests and write to file
-        print("Downloading Open Shift Requests from SumoLogic...")
+        print("\nDownloading Open Shift Requests from SumoLogic...")
         open_shift_requests = OpenShiftRequests(accesId, accessKey)
         open_shift_requests.get_sumologic_content(
                 past_requests_timestamp, now_timestamp, 10000)
@@ -62,8 +62,9 @@ class GetData:
 
         open_shift_apply.write_response_to_file(
                 sumologic_out_dir+apply_filename)
-        print("Complete. Results written to "+sumologic_out_dir+apply_filename)
+        print("Complete. Results written to {}: \n".format(sumologic_out_dir+apply_filename))
 
+        print("\nUpdating time stamp files.")
         # write timestamps
         FileUtil.write_timestamp(
                 sumologic_timestamp_dir+requests_timestamp_filename,
@@ -71,4 +72,3 @@ class GetData:
         FileUtil.write_timestamp(
                 sumologic_timestamp_dir+apply_timestamp_filename,
                 now_timestamp)
-        print("\nUpdated time stamp files.")

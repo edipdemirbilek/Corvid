@@ -20,6 +20,9 @@ env = args[3]
 username = args[4]
 password = args[5]
 
+num_days = 0.1
+debug = False
+
 print("\n############# STEP 1: GET DATA FROM SUMOLOGIC SERVER #############\n")
 
 get_data_params = {}
@@ -27,7 +30,7 @@ get_data_params["sumologic_timestamp_dir"] = 'data/sumologic/timestamp/'
 get_data_params["sumologic_out_dir"] = 'data/sumologic/out/'
 get_data_params["sumologic_out_archive_dir"] = 'data/sumologic/out/archive/'
 
-# GetData.run(acces_id, access_key, env, get_data_params, remove_timestamp_files=True)
+GetData.run(num_days, acces_id, access_key, env, get_data_params, remove_timestamp_files=True)
 
 print("\n############# STEP 2: CORRELATE DATA #############################\n")
 
@@ -38,7 +41,8 @@ correlate_data_params["correlate_in_archive_dir"] = 'data/corralete/in/archive/'
 correlate_data_params["correlate_out_dir"] = 'data/corralete/out/'
 correlate_data_params["correlate_out_archive_dir"] = 'data/corralete/out/archive/'
 
-# CorrelateData.run(get_data_params, correlate_data_params)
+debug = False
+CorrelateData.run(debug, get_data_params, correlate_data_params)
 
 print("\n############# STEP 3: ENRICH DATA ################################\n")
 
@@ -48,7 +52,8 @@ enrich_data_params["enrich_in_archive_dir"] = 'data/enrich/in/archive/'
 enrich_data_params["enrich_out_dir"] = 'data/enrich/out'
 enrich_data_params["enrich_out_archive_dir"] = 'data/enrich/out/archive/'
 
-EnrichData.run(env, username, password, correlate_data_params, enrich_data_params)
+debug = False
+EnrichData.run(debug, env, username, password, correlate_data_params, enrich_data_params)
 
 print("\n############# STEP 4: UPDATE DATASET #############################\n")
 

@@ -15,7 +15,7 @@ from util.FileUtil import FileUtil
 
 class CorrelateData:
 
-    def run(get_data_params, correlate_data_params):
+    def run(debug, get_data_params, correlate_data_params):
 
         sumologic_out_dir = get_data_params["sumologic_out_dir"]
         sumologic_out_archive_dir = get_data_params["sumologic_out_archive_dir"]
@@ -24,16 +24,25 @@ class CorrelateData:
         correlate_in_archive_dir = correlate_data_params["correlate_in_archive_dir"]
         correlate_out_dir = correlate_data_params["correlate_out_dir"]
 
+        # copy sumologic out to correlate in current cycle
+        # move sumologic out to sumologic out archive
+        FileUtil.copy_and_nove_files(sumologic_out_dir,
+                                     correlate_in_current_cycle_dir,
+                                     sumologic_out_archive_dir, "*.csv")
+
         # now in milliseconds
         now_timestamp = TimeUtil.get_current_milli_time()
         correlate_filename = 'Correlate_'+str(now_timestamp)+".csv"
 
-        print("Loading Open Shift Requests from Filesystem...")
+        print("\nLoading Open Shift Requests from Filesystem...")
         # correlate apply with requests in current and previoud cycle
         df_requests = FileUtil.get_df_from_csv_dirs(correlate_in_current_cycle_dir,
                                                     correlate_in_previous_cycle_dir,
                                                     "Requests*")
         print("Complete. Count: " + str(df_requests.shape[0]))
+        if(debug):
+            for index, row in df_requests.iterrows():
+                print(row)
 
         print("\nLoading Apply to Open Shifts from Filesystem...")
         df_apply = FileUtil.get_df_from_csv_dir(correlate_in_current_cycle_dir,
@@ -88,7 +97,21 @@ class CorrelateData:
 
                 CorrelateData.add_row(correlate_out_dir+correlate_filename, fields, row)
 
-        print("Complete. Results written to: " + correlate_out_dir+correlate_filename)
+        print("Complete. Results written to: {} \n".format(correlate_out_dir+correlate_filename))
+
+        # move correlate in previous cycle to correlate in archive
+        FileUtil.move_files(correlate_in_previous_cycle_dir,
+                            correlate_in_archive_dir, "*.csv")
+
+        # move correlate in current cycle (Apply) to
+        # correlate in archive cycle
+        FileUtil.move_files(correlate_in_current_cycle_dir,
+                            correlate_in_archive_dir, "Apply*")
+
+        # move correlate in current cycle (Requests) to
+        # correlate in previous cycle
+        FileUtil.move_files(correlate_in_current_cycle_dir,
+                            correlate_in_previous_cycle_dir, "Requests*")
 
 
     def add_header(filename, fields):

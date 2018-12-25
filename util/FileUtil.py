@@ -23,8 +23,10 @@ class FileUtil():
                 timestamp = fp.readline()
 
                 if timestamp:
+                    print("Read time stamp from file: {} value: {}".format(filename, str(timestamp)))
                     return timestamp
 
+        print("No valid timestamp from file: {} Returning default value: {}".format(filename, str(past_time)))
         return past_time
 
     def delete_if_exist(filename):
@@ -33,21 +35,26 @@ class FileUtil():
 
     def write_timestamp(filename, timestamp):
         with open(filename, 'w') as fp:
+            print("Writing timestamp value: {} to file: {}". format(str(timestamp), filename))
             fp.write(str(timestamp))
 
     def move_files(src_dir, dst_dir, file_name_filter):
+        print("Moving {} files from: {} to: {}".format(file_name_filter, src_dir, dst_dir))
         files = glob.iglob(os.path.join(src_dir, file_name_filter))
         for file in files:
             if os.path.isfile(file):
                 shutil.move(file, dst_dir)
 
     def copy_files(src_dir, dst_dir, file_name_filter):
+        print("Copying {} files from: {} to: {}".format(file_name_filter, src_dir, dst_dir))
         files = glob.iglob(os.path.join(src_dir, file_name_filter))
         for file in files:
             if os.path.isfile(file):
                 shutil.copy(file, dst_dir)
 
     def copy_and_nove_files(src_dir, dst_copy_dir, dst_move_dir, file_name_filter):
+        print("Copying {} files from: {} to: {}".format(file_name_filter, src_dir, dst_copy_dir))
+        print("Moving {} files from: {} to: {}".format(file_name_filter, src_dir, dst_move_dir))
         files = glob.iglob(os.path.join(src_dir, file_name_filter))
         for file in files:
             if os.path.isfile(file):

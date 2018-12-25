@@ -17,4 +17,4 @@ class TimeUtil():
 
     def get_past_milli_time(num_days):
         return TimeUtil.get_current_milli_time() \
-            - (TimeUtil.one_day_in_millis * num_days)
+            - int(TimeUtil.one_day_in_millis * num_days)

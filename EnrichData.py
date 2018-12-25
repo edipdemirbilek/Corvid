@@ -16,7 +16,7 @@ from util.RestUtil import RestUtil
 
 class EnrichData:
 
-    def run(env, username, password, correlate_data_params, enrich_data_params):
+    def run(debug, env, username, password, correlate_data_params, enrich_data_params):
 
         correlate_out_dir = correlate_data_params["correlate_out_dir"]
         correlate_out_archive_dir = correlate_data_params["correlate_out_archive_dir"]
@@ -24,17 +24,42 @@ class EnrichData:
         enrich_in_archive_dir = enrich_data_params["enrich_in_archive_dir"]
         enrich_out_dir = enrich_data_params["enrich_out_dir"]
 
-        # move enrich in to enrich in processed
         # copy correlate data out to enrich in
-        # move correlate out to correlate out processed
+        # move correlate out to correlate out archive
+        FileUtil.copy_and_nove_files(correlate_out_dir,
+                                     enrich_in_dir,
+                                     correlate_out_archive_dir, "*.csv")
 
         # Authenticate
+        print("\nAuthenticating user...")
         xtoken = RestUtil.authenticate(env, username, password)
-        print("xtoken: {}".format(xtoken))
+        print("Authentication Sucessfull: X-Token: {}".format(xtoken))
 
-        # Get Info for the User in context
-        # Get Info for the Event in context
+        print("\nLoading Data to be enriched from Filesystem...")
+        df_enrich = FileUtil.get_df_from_csv_dir(enrich_in_dir, "*.csv")
+        print("Complete. Count: " + str(df_enrich.shape[0]))
 
-        # write enriche data to out dir with timestamp
+        print("\nEnriching User and Event info...")
+        for index, row in df_enrich.iterrows():
+            loggedinuser = row['loggedinuser']
+            companyid = row['companyid']
+            query_datetime = row['query_datetime']
+            apply_datetime = row['apply_datetime']
+            numberofopenshifts = row['numberofopenshifts']
+            locationid = row['locationid']
+            eventid = row['eventid']
+            applied = row['applied']
 
+            # Get Info for the User in context
+            response = RestUtil.get_user_details(debug, env, xtoken, companyid, loggedinuser)
 
+            # Get Info for the Event in context
+            response = RestUtil.get_event_details(debug, env, xtoken, companyid, locationid, eventid)
+
+            # write enriche data to out dir with timestamp
+
+        print("Complete. Count: {} \n".format(str(df_enrich.shape[0])))
+
+        # move enrich in to enrich in archive
+        FileUtil.move_files(enrich_in_dir,
+                            enrich_in_archive_dir, "*.csv")
