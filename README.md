@@ -1,6 +1,6 @@
 # SumoLogic
 
-To allow reading Open Shifts related data from SumoLogic. You need to provide the SumoLogic Access ID and Access Key as program arguments.
+To allow reading Open Shifts related data from SumoLogic. You need to provide the SumoLogic Access ID, Access Key, Target Workjam Environment, Workjam Public API username and password. 
 
 ## How to Run:
 
