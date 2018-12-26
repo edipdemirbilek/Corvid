@@ -1,5 +1,7 @@
 # Corvid
 
+![Philadelphia's Magic Gardens. This place was so cool!](https://cdn.shopify.com/s/files/1/1433/7684/products/corvidssm_1024x1024@2x.jpg?v=1473361510 "Philadelphia's Magic Gardens")
+
 This programm does the following pipeline:
 - gets Workjam Open Shift Apply and Open Shift Requests from SumoLogic Server,
 - correlates Open Shift Apply with Open Shift Requests,
