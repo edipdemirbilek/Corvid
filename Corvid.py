@@ -7,10 +7,10 @@ Created on Sun Dec 23 12:45:13 2018
 """
 import sys
 
-from GetData import GetData
-from CorrelateData import CorrelateData
-from EnrichData import EnrichData
-from UpdateDataset import UpdateDataset
+from pipeline.GetData import GetData
+from pipeline.CorrelateData import CorrelateData
+from pipeline.EnrichData import EnrichData
+from pipeline.UpdateDataset import UpdateDataset
 
 
 args = sys.argv
@@ -20,7 +20,7 @@ env = args[3]
 username = args[4]
 password = args[5]
 
-num_days = 0.1
+num_days = 1
 debug = False
 
 print("\n############# STEP 1: GET DATA FROM SUMOLOGIC SERVER #############\n")

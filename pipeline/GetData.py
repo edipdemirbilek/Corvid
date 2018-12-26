@@ -7,8 +7,8 @@ Created on Sat Dec 22 15:52:23 2018
 """
 from util.TimeUtil import TimeUtil
 from util.FileUtil import FileUtil
-from openshift.OpenShiftRequests import OpenShiftRequests
-from openshift.OpenShiftApply import OpenShiftApply
+from service.OpenShiftRequests import OpenShiftRequests
+from service.OpenShiftApply import OpenShiftApply
 
 
 class GetData:

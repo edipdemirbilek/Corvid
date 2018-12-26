@@ -7,7 +7,7 @@ Created on Fri Dec 21 21:55:18 2018
 """
 import csv
 
-from openshift.OpenShift import OpenShift
+from service.OpenShift import OpenShift
 
 
 class OpenShiftApply(OpenShift):

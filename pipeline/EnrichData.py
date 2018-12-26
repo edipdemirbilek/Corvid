@@ -11,8 +11,7 @@ import pprint
 
 from util.TimeUtil import TimeUtil
 from util.FileUtil import FileUtil
-from util.RestUtil import RestUtil
-from util.WorkjamUtil import WorkjamUtil
+from service.WorkjamAPI import WorkjamAPI
 
 
 class EnrichData:
@@ -31,10 +30,7 @@ class EnrichData:
                                      enrich_in_dir,
                                      correlate_out_archive_dir, "*.csv")
 
-        # Authenticate
-        print("\nAuthenticating user...")
-        xtoken = RestUtil.authenticate(env, username, password)
-        print("Authentication Sucessfull: X-Token: {}".format(xtoken))
+        wj_api = WorkjamAPI(debug, env, username, password)
 
         print("\nLoading Data to be enriched from Filesystem...")
         df_enrich = FileUtil.get_df_from_csv_dir(enrich_in_dir, "*.csv")
@@ -51,13 +47,17 @@ class EnrichData:
             eventid = row['eventid']
             applied = row['applied']
 
-            # Get Info for the User in context
-            response_user_dto = RestUtil.get_user_details(debug, env, xtoken, companyid, loggedinuser)
-            print(WorkjamUtil.user_dto_to_csv(response_user_dto.json()))
+            try:
+                # Get Info for the User in context
+                response_user_csv = wj_api.get_user_details(companyid, loggedinuser)
+                print(response_user_csv)
 
-            # Get Info for the Event in context
-            response_event_dto = RestUtil.get_event_details(debug, env, xtoken, companyid, locationid, eventid)
-            print(WorkjamUtil.event_dto_to_csv(response_event_dto.json()))
+                # Get Info for the Event in context
+                response_event_csv = wj_api.get_event_details(companyid, locationid, eventid)
+                print(response_event_csv)
+
+            except:
+                print("Error happened. Probably now way to fix this. Life goes on, so the pipeline :)")
 
             # write enriche data to out dir with timestamp
 
