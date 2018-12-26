@@ -4,7 +4,7 @@ This programm does the following pipeline:
 - gets Workjam Open Shift Apply and Open Shift Requests from SumoLogic Server,
 - correlates Open Shift Apply with Open Shift Requests,
 - enrich the user and shift information,
-- add the data collected data to Dataset.
+- adds the collected data to Dataset.
 
 To run, it requires SumoLogic Access ID, Access Key, Target Workjam Environment, Workjam Public API username and password as programm arguments
 
