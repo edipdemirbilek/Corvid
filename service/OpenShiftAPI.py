@@ -10,7 +10,7 @@ import time
 from sumologic.SumoLogic import SumoLogic
 
 
-class OpenShift(object):
+class OpenShiftAPI(object):
 
     open_shift_response = ''
 

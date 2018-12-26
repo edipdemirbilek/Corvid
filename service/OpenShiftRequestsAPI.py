@@ -7,10 +7,10 @@ Created on Fri Dec 21 21:55:18 2018
 """
 import csv
 
-from service.OpenShift import OpenShift
+from service.OpenShiftAPI import OpenShiftAPI
 
 
-class OpenShiftRequests(OpenShift):
+class OpenShiftRequestsAPI(OpenShiftAPI):
 
     def __init__(self, accesId, accessKey):
         query = "_sourceCategory=qa/app/logs/api-schedule and LogMining: open_shift_requests \

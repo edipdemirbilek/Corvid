@@ -7,8 +7,8 @@ Created on Sat Dec 22 15:52:23 2018
 """
 from util.TimeUtil import TimeUtil
 from util.FileUtil import FileUtil
-from service.OpenShiftRequests import OpenShiftRequests
-from service.OpenShiftApply import OpenShiftApply
+from service.OpenShiftRequestsAPI import OpenShiftRequestsAPI
+from service.OpenShiftApplyAPI import OpenShiftApplyAPI
 
 
 class GetData:
@@ -46,7 +46,7 @@ class GetData:
 
         # get open shift requests and write to file
         print("\nDownloading Open Shift Requests from SumoLogic...")
-        open_shift_requests = OpenShiftRequests(accesId, accessKey)
+        open_shift_requests = OpenShiftRequestsAPI(accesId, accessKey)
         open_shift_requests.get_sumologic_content(
                 past_requests_timestamp, now_timestamp, 10000)
 
@@ -56,7 +56,7 @@ class GetData:
 
         # get open shift apply and write to file
         print("\nDownloading Apply to Open Shifts from SumoLogic...")
-        open_shift_apply = OpenShiftApply(accesId, accessKey)
+        open_shift_apply = OpenShiftApplyAPI(accesId, accessKey)
         open_shift_apply.get_sumologic_content(
                 past_apply_timestamp, now_timestamp, 10000)
 
