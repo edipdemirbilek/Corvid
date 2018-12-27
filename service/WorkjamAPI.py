@@ -137,36 +137,133 @@ class WorkjamAPI(object):
     def get_user_header_csv(self):
         return ""
 
+    def get_user_badge_level_ids(self, event_json):
+        try:
+            return '_'.join(map(str, event_json['badgeLevelIds']))
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_birth_date(self, event_json):
+        try:
+            return event_json['birthDate']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_employment_position(self, event_json):
+        return event_json['id'] + ',' \
+    + event_json['name']
+
+    def get_user_employment_location(self, event_json):
+        return event_json['externalCode'] + ',' \
+    + event_json['id'] + ',' \
+    + event_json['name'] + ',' \
+    + event_json['type']
+
+    def get_user_current_employment(self, event_json):
+        return event_json['id'] + ',' \
+    + self.get_user_employment_location(event_json['location'])  + ',' \
+    + self.get_user_employment_position(event_json['position'])  + ',' \
+    + str(event_json['primary']) + ',' \
+    + event_json['startDate'] + ',' \
+    + str(event_json['systemGenerated'])
+
+    def get_user_next_two_employments(self, other_employments):
+        default = ',,,,,,,,,'
+
+        if len(other_employments) == 0:
+            return default + ',' + default
+
+        elif len(other_employments) == 1:
+            return default + ',' + other_employments[0]
+
+        else:
+            return ','.join(other_employments[:2])
+
+    def get_user_current_employments(self, event_json):
+        try:
+            other_employments = []
+            primary_emploment = ''
+            for current_employment in event_json['currentEmployments']:
+                if (current_employment['primary'] == True):
+                    primary_emploment = self.get_user_current_employment(current_employment)
+                else:
+                    other_employments.append(self.get_user_current_employment(current_employment))
+
+            return primary_emploment + ',' + self.get_user_next_two_employments(other_employments)
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_email(self, event_json):
+        try:
+            return event_json['email']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_first_name(self, event_json):
+        try:
+            return event_json['firstName']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_id(self, event_json):
+        try:
+            return event_json['id']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_language(self, event_json):
+        try:
+            return event_json['language']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_last_name(self, event_json):
+        try:
+            return event_json['lastName']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_phone_numbers(self, event_json):
+        try:
+            return '_'.join(map(str, event_json['phoneNumbers']))
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_status(self, event_json):
+        try:
+            return event_json['status']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_user_name(self, event_json):
+        try:
+            return event_json['username']
+        except Exception as e:
+            print(e)
+            return ''
+
     def user_dto_to_csv(self, event_json):
-#    ##################### USER START #########################
-#    {'badgeLevelIds': [543752,
-#                       821517],
-#     'birthDate': '2017-06-14',
-#     'currentEmployments': [{'id': '370130',
-#                             'location': {'externalCode': '783336',
-#                                          'id': '328038',
-#                                          'name': 'Lexington Rombus',
-#                                          'type': 'STORE'},
-#                             'position': {'id': '393589', 'name': 'Employee EN'},
-#                             'primary': True,
-#                             'startDate': '2016-12-07',
-#                             'systemGenerated': False}],
-#     'email': 'andgo@sharklasers.com',
-#     'firstName': 'And',
-#     'id': '370129',
-#     'language': 'en',
-#     'lastName': 'Go',
-#     'phoneNumbers': [{}],
-#     'status': 'ACTIVE',
-#     'username': 'andgo'}
-#    ###################### USER END ##########################
-
-#        print("itemas start")
-#        for item in event_json['currentEmployments']:
-#            print(item)
-#        print("itemas end")
-
-        return event_json['currentEmployments'][0]['id']
+        return self.get_user_id(event_json) + ',' \
+    + self.get_user_name(event_json) + ',' \
+    + self.get_user_first_name(event_json) + ',' \
+    + self.get_user_last_name(event_json) + ',' \
+    + self.get_user_birth_date(event_json) + ',' \
+    + self.get_user_language(event_json) + ',' \
+    + self.get_user_phone_numbers(event_json) + ',' \
+    + self.get_user_email(event_json) + ',' \
+    + self.get_user_status(event_json) + ',' \
+    + self.get_user_current_employments(event_json) + ',' \
+    + self.get_user_badge_level_ids(event_json)
 
     def get_user_details(self, companyid, userid):
 

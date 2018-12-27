@@ -47,17 +47,17 @@ class EnrichData:
             eventid = row['eventid']
             applied = row['applied']
 
-            try:
-                # Get Info for the User in context
-                response_user_csv = wj_api.get_user_details(companyid, loggedinuser)
-                print(response_user_csv)
+#            try:
+            # Get Info for the User in context
+            response_user_csv = wj_api.get_user_details(companyid, loggedinuser)
+            print(response_user_csv)
 
-                # Get Info for the Event in context
-                response_event_csv = wj_api.get_event_details(companyid, locationid, eventid)
-                print(response_event_csv)
+            # Get Info for the Event in context
+            response_event_csv = wj_api.get_event_details(companyid, locationid, eventid)
+            print(response_event_csv)
 
-            except:
-                print("Error happened. Probably now way to fix this. Life goes on, so the pipeline :)")
+#            except:
+#                print("Error happened. Probably now way to fix this. Life goes on, so the pipeline :)")
 
             # write enriche data to out dir with timestamp
 

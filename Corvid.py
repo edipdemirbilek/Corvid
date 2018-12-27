@@ -20,7 +20,7 @@ env = args[3]
 username = args[4]
 password = args[5]
 
-num_days = 1
+num_days = 0.1
 debug = False
 
 print("\n############# STEP 1: GET DATA FROM SUMOLOGIC SERVER #############\n")
