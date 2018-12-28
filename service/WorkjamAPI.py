@@ -57,18 +57,44 @@ class WorkjamAPI(object):
     def get_event_header_csv(self):
         return ""
 
-    def event_dto_to_csv(self, event_dto):
-#    #################### EVENT START #########################
-#    {'allowedActions': ['DIRECT_SWAP', ],
-#     'approvalRequests': [],
-#     'assignees': [{'bookingMethod': 'ASSIGN',
+    def get_event_allowed_actions(self, event_json):
+        try:
+            return '_'.join(map(str, event_json['allowedActions']))
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_approval_requests(self, event_json):
+#        'approvalRequests': []
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_assignees(self, event_json):
+#        'assignees': [{'bookingMethod': 'ASSIGN',
 #                    'breaks': [],
 #                    'profile': {'firstName': 'And',
 #                                'id': '370129',
 #                                'lastName': 'Go'},
-#                    'status': 'CONFIRMED'}],
-#     'createdBy': {'id': '328237'},
-#     'event': {'endDateTime': '2018-12-27T14:00:00.000+0000',
+#                    'status': 'CONFIRMED'}]
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_created_by(self, event_json):
+#        'createdBy': {'id': '328237'}
+        try:
+            return event_json['createdBy']['id']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event(self, event_json):
+#        'event': {'endDateTime': '2018-12-27T14:00:00.000+0000',
 #               'id': '6171fbc7-dc57-42f8-9169-26f6459523e6',
 #               'location': {'externalCode': '783336',
 #                            'externalId': '783336',
@@ -80,33 +106,117 @@ class WorkjamAPI(object):
 #               'recurrence': None,
 #               'startDateTime': '2018-12-27T13:00:00.000+0000',
 #               'title': 'Employee EN',
-#               'type': 'SHIFT'},
-#     'externalFields': {'workjam': {'locationExternalCodesMap': {'328038': [None,
+#               'type': 'SHIFT'}
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_external_fields(self, event_json):
+#        'externalFields': {'workjam': {'locationExternalCodesMap': {'328038': [None,
 #                                                                            None,
 #                                                                            None,
-#                                                                            '783336']}}},
-#     'externalId': '6171fbc7-dc57-42f8-9169-26f6459523e6',
-#     'id': '6171fbc7-dc57-42f8-9169-26f6459523e6',
-#     'locked': False,
-#     'offeredSpots': {'remainingQuantity': 0},
-#     'openSpots': {'broadcast': False,
+#                                                                            '783336']}}}
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_external_id(self, event_json):
+        try:
+            return event_json['externalId']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_id(self, event_json):
+        try:
+            return event_json['id']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_locked(self, event_json):
+        try:
+            return str(event_json['id'])
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_offered_spots(self, event_json):
+#        'offeredSpots': {'remainingQuantity': 0}
+        try:
+            return event_json['offeredSpots']['remainingQuantity']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_open_spots(self, event_json):
+#        'openSpots': {'broadcast': False,
 #                   'remainingQuantity': 0,
 #                   'requiresApproval': False,
 #                   'useMarketplace': False,
-#                   'useSeniorityList': False},
-#     'position': {'externalId': '123', 'id': '393589', 'name': 'Employee EN'},
-#     'quantity': 1,
-#     'segments': [{'endDateTime': '2018-12-27T14:00:00.000+0000',
+#                   'useSeniorityList': False}
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_position(self, event_json):
+#        'position': {'externalId': '123', 'id': '393589', 'name': 'Employee EN'}
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_quantity(self, event_json):
+        try:
+            return event_json['quantity']
+        except Exception as e:
+            print(e)
+            return ''
+
+    def get_event_segments(self, event_json):
+#        'segments': [{'endDateTime': '2018-12-27T14:00:00.000+0000',
 #                   'location': {'id': '328038',
 #                                'name': 'Lexington Rombus',
 #                                'timeZoneId': 'America/Toronto'},
 #                   'position': {'id': '393589', 'name': 'Employee EN'},
 #                   'startDateTime': '2018-12-27T13:00:00.000+0000',
-#                   'type': 'SHIFT'}],
-#     'status': 'PUBLISHED'}
-    ##################### EVENT END ##########################
+#                   'type': 'SHIFT'}]
+        try:
+            return ''
+        except Exception as e:
+            print(e)
+            return ''
 
-        return event_dto['createdBy']
+    def get_event_status(self, event_json):
+        try:
+            return str(event_json['status'])
+        except Exception as e:
+            print(e)
+            return ''
+
+    def event_dto_to_csv(self, event_json):
+        return self.get_event_allowed_actions(event_json) + ',' \
+    + self.get_event_approval_requests(event_json) + ',' \
+    + self.get_event_assignees(event_json) + ',' \
+    + self.get_event_created_by(event_json) + ',' \
+    + self.get_event(event_json) + ',' \
+    + self.get_event_external_fields(event_json) + ',' \
+    + self.get_event_external_id(event_json) + ',' \
+    + self.get_event_id(event_json) + ',' \
+    + self.get_event_locked(event_json) + ',' \
+    + self.get_event_offered_spots(event_json) + ',' \
+    + self.get_event_open_spots(event_json) + ',' \
+    + self.get_event_position(event_json) + ',' \
+    + self.get_event_quantity(event_json) + ',' \
+    + self.get_event_segments(event_json) + ',' \
+    + self.get_event_status(event_json)
 
     def get_event_details(self, companyid, locationid, eventid):
         url = self.get_event_url(companyid, locationid, eventid)
