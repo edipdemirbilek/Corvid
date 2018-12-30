@@ -49,7 +49,7 @@ print("\n############# STEP 3: ENRICH DATA ################################\n")
 enrich_data_params = {}
 enrich_data_params["enrich_in_dir"] = 'data/enrich/in/'
 enrich_data_params["enrich_in_archive_dir"] = 'data/enrich/in/archive/'
-enrich_data_params["enrich_out_dir"] = 'data/enrich/out'
+enrich_data_params["enrich_out_dir"] = 'data/enrich/out/'
 enrich_data_params["enrich_out_archive_dir"] = 'data/enrich/out/archive/'
 
 debug = False
