@@ -328,10 +328,10 @@ class WorkjamAPI(object):
             pprint.pprint(response.json())
             print("##################### EVENT END ##########################")
 
-        if response.status_code == 500:
+        if response.status_code != 200:
             # pprint.pprint(response.json())
-            raise RuntimeError('Retrieving Event Details failed: {}'
-                               .format(response.status_code))
+            raise RuntimeError('\nRetrieving Event Details failed!!!\n Response from Workjam Server: {} for: {}\n'
+                               .format(response.status_code, url))
 
         return self.event_dto_to_csv(header, response.json())
 
@@ -545,9 +545,9 @@ class WorkjamAPI(object):
             pprint.pprint(response.json())
             print("###################### USER END ##########################")
 
-        if response.status_code == 500:
+        if response.status_code != 200:
             # pprint.pprint(response.json())
-            raise RuntimeError('Retrieving User Details failed: {}'
-                               .format(response.status_code))
+            raise RuntimeError('\nRetrieving User Details failed!!!\n Response from Workjam Server: {} for: {}\n'
+                               .format(response.status_code, url))
 
         return self.user_dto_to_csv(header, response.json())

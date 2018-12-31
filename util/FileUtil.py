@@ -52,7 +52,7 @@ class FileUtil():
             if os.path.isfile(file):
                 shutil.copy(file, dst_dir)
 
-    def copy_and_nove_files(src_dir, dst_copy_dir, dst_move_dir, file_name_filter):
+    def copy_and_move_files(src_dir, dst_copy_dir, dst_move_dir, file_name_filter):
         print("Copying {} files from: {} to: {}".format(file_name_filter, src_dir, dst_copy_dir))
         print("Moving {} files from: {} to: {}".format(file_name_filter, src_dir, dst_move_dir))
         files = glob.iglob(os.path.join(src_dir, file_name_filter))
@@ -72,3 +72,21 @@ class FileUtil():
         # for f in glob.glob() - returns a List[DataFrames]
         # pd.concat() - returns one pd.DataFrame()
         return pd.concat([pd.read_csv(f) for f in glob.glob(dir1+file_name_filter)], ignore_index = True)
+
+    def add_df_to_csv_file(df, filename):
+        df.to_csv(filename, index=False)
+
+    def write_to_file(filename, row):
+        with open(filename, 'w') as file:
+            #print(row)
+            file.write(row)
+
+    def file_exists(filename):
+        if os.path.isfile(filename):
+            return True
+        return False
+
+    def append_to_file(filename, row):
+        with open(filename, 'a') as file:
+            #print(row)
+            file.write(row)

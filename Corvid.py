@@ -60,6 +60,6 @@ print("\n############# STEP 4: UPDATE DATASET #############################\n")
 update_dataset_params = {}
 update_dataset_params["update_in_dir"] = 'data/update/in/'
 update_dataset_params["update_in_archive_dir"] = 'data/update/in/archive/'
-update_dataset_params["update_out_dir"] = 'data/update/out/'
+update_dataset_params["dataset_file"] = 'data/update/out/Dataset.csv'
 
 UpdateDataset.run(enrich_data_params, update_dataset_params)

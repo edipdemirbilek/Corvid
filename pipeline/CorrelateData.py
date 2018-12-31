@@ -26,7 +26,7 @@ class CorrelateData:
 
         # copy sumologic out to correlate in current cycle
         # move sumologic out to sumologic out archive
-        FileUtil.copy_and_nove_files(sumologic_out_dir,
+        FileUtil.copy_and_move_files(sumologic_out_dir,
                                      correlate_in_current_cycle_dir,
                                      sumologic_out_archive_dir, "*.csv")
 

@@ -5,11 +5,6 @@ Created on Sat Dec 22 15:52:23 2018
 
 @author: edip.demirbilek
 """
-import json
-import requests
-import pprint
-import sys
-
 from util.TimeUtil import TimeUtil
 from util.FileUtil import FileUtil
 from service.WorkjamAPI import WorkjamAPI
@@ -27,7 +22,7 @@ class EnrichData:
 
         # copy correlate data out to enrich in
         # move correlate out to correlate out archive
-        FileUtil.copy_and_nove_files(correlate_out_dir,
+        FileUtil.copy_and_move_files(correlate_out_dir,
                                      enrich_in_dir,
                                      correlate_out_archive_dir, "*.csv")
 
@@ -46,7 +41,7 @@ class EnrichData:
         response_user_header = wj_api.get_user_details(True, '', '')
         response_event_header = wj_api.get_event_details(True, '', '', '')
 
-        EnrichData.add_row(enrich_out_dir+enrich_filename,
+        FileUtil.write_to_file(enrich_out_dir+enrich_filename,
                            'loggedin_user,company_id,query_datetime,apply_datetime,number_of_open_shifts,location_id,event_id,'
                                    + response_user_header + ','
                                    + response_event_header + ',applied\n')
@@ -73,7 +68,7 @@ class EnrichData:
                 response_event_csv = wj_api.get_event_details(False, companyid, locationid, eventid)
 
                 # # write enriche data to out dir with timestamp
-                EnrichData.add_row(enrich_out_dir+enrich_filename,
+                FileUtil.append_to_file(enrich_out_dir+enrich_filename,
                                    str(loggedinuser) + ','
                                    + str(companyid) + ','
                                    + str(query_datetime) + ','
@@ -89,20 +84,10 @@ class EnrichData:
 
             except Exception as e:
                 # print(e)
-                print('')
+                print(e)
 
         print("Complete. Found: {} Written: {}\n".format(str(df_enrich.shape[0]), num_records_written_to_file))
 
         # move enrich in to enrich in archive
         FileUtil.move_files(enrich_in_dir,
                             enrich_in_archive_dir, "*.csv")
-
-    def add_header(filename, fields):
-        with open(filename, 'w') as file:
-            #print(row)
-            file.write(row)
-
-    def add_row(filename, row):
-        with open(filename, 'a') as file:
-            #print(row)
-            file.write(row)
