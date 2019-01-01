@@ -74,7 +74,7 @@ class FileUtil():
         return pd.concat([pd.read_csv(f) for f in glob.glob(dir1+file_name_filter)], ignore_index = True)
 
     def add_df_to_csv_file(df, filename):
-        df.to_csv(filename, index=False)
+        df.to_csv(filename, index=False, mode='a', header=False)
 
     def write_to_file(filename, row):
         with open(filename, 'w') as file:
