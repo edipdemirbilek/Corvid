@@ -125,7 +125,7 @@ class WorkjamAPI(object):
 
         except Exception as e:
             print(e)
-            return ''
+            return ',,,,,'
 
     def get_event(self, header, event_json):
         if header:
@@ -152,7 +152,7 @@ class WorkjamAPI(object):
 
         except Exception as e:
             print(e)
-            return ''
+            return ',,,,,,,,,,,,'
 
     def get_event_external_fields(self, header, event_json):
         if header:
@@ -227,7 +227,7 @@ class WorkjamAPI(object):
 
         except Exception as e:
             print(e)
-            return ''
+            return ',,,,'
 
     def get_event_position(self, header, event_json):
         if header:
@@ -244,7 +244,7 @@ class WorkjamAPI(object):
             return ''
         except Exception as e:
             print(e)
-            return ''
+            return ',,'
 
     def get_event_quantity(self, header, event_json):
         if header:
@@ -364,9 +364,11 @@ class WorkjamAPI(object):
         if header:
             return 'user_employment_' + str(counter) + '_position_id,' \
                  + 'user_employment_' + str(counter) + '_position_name'
-
-        return event_json['id'] + ',' \
-    + event_json['name']
+        try:
+            return event_json['id'] + ',' + event_json['name']
+        except Exception as e:
+            print(e)
+            return ','
 
     def get_user_employment_location(self, header, counter, event_json):
         if header:
@@ -374,11 +376,14 @@ class WorkjamAPI(object):
                  + 'user_employment_' + str(counter) + '_location_id,' \
                  + 'user_employment_' + str(counter) + '_location_name,' \
                  + 'user_employment_' + str(counter) + '_location_type'
-
-        return event_json['externalCode'] + ',' \
-    + event_json['id'] + ',' \
-    + event_json['name'] + ',' \
-    + event_json['type']
+        try:
+            return event_json['externalCode'] + ',' \
+        + event_json['id'] + ',' \
+        + event_json['name'] + ',' \
+        + event_json['type']
+        except Exception as e:
+            print(e)
+            return ',,,'
 
     def get_user_current_employment(self, header, counter, event_json):
         if header:
@@ -389,12 +394,16 @@ class WorkjamAPI(object):
         + 'user_employment_' + str(counter) + '_start_date,' \
         + 'user_employment_' + str(counter) + '_system_generated'
 
-        return event_json['id'] + ',' \
-    + self.get_user_employment_location(header, counter, event_json['location'])  + ',' \
-    + self.get_user_employment_position(header, counter, event_json['position'])  + ',' \
-    + str(event_json['primary']) + ',' \
-    + event_json['startDate'] + ',' \
-    + str(event_json['systemGenerated'])
+        try:
+            return event_json['id'] + ',' \
+        + self.get_user_employment_location(header, counter, event_json['location'])  + ',' \
+        + self.get_user_employment_position(header, counter, event_json['position'])  + ',' \
+        + str(event_json['primary']) + ',' \
+        + event_json['startDate'] + ',' \
+        + str(event_json['systemGenerated'])
+        except Exception as e:
+            print(e)
+            return ',,,,,,,,'
 
     def get_user_next_two_employments(self, other_employments):
         default = ',,,,,,,,,'
@@ -430,7 +439,7 @@ class WorkjamAPI(object):
 
         except Exception as e:
             print(e)
-            return ''
+            return ',,,,,,,,,,,,,,,,,,,,,,,,,,,,,'
 
     def get_user_email(self, header, event_json):
         if header:

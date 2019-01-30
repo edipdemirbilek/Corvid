@@ -14,7 +14,7 @@ class OpenShiftApplyAPI(OpenShiftAPI):
 
     def __init__(self, accesId, accessKey):
 
-        query = "_sourceCategory=qa/app/logs/api-schedule and LogMining: apply \
+        query = "_sourceCategory=prod/app/logs/api-schedule and LogMining: apply \
         | parse \"*  INFO\" as DateTime \
         | parse \"LogMining: *,\" as operation \
         | parse \"loggedInUser: *,\" as loggedInUser \

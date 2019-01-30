@@ -13,7 +13,7 @@ from service.OpenShiftAPI import OpenShiftAPI
 class OpenShiftRequestsAPI(OpenShiftAPI):
 
     def __init__(self, accesId, accessKey):
-        query = "_sourceCategory=qa/app/logs/api-schedule and LogMining: open_shift_requests \
+        query = "_sourceCategory=prod/app/logs/api-schedule and LogMining: open_shift_requests \
         | parse \"*  INFO\" as DateTime \
         | parse \"LogMining: *,\" as operation \
         | parse \"loggedInUser: *,\" as loggedInuser \

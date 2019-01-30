@@ -61,11 +61,11 @@ class EnrichData:
             applied = row['applied']
 
             try:
-                # Get Info for the User in context
-                response_user_csv = wj_api.get_user_details(False, companyid, loggedinuser)
-
                 # Get Info for the Event in context
                 response_event_csv = wj_api.get_event_details(False, companyid, locationid, eventid)
+
+                # Get Info for the User in context
+                response_user_csv = wj_api.get_user_details(False, companyid, loggedinuser)
 
                 # # write enriche data to out dir with timestamp
                 FileUtil.append_to_file(enrich_out_dir+enrich_filename,
@@ -83,7 +83,6 @@ class EnrichData:
                 num_records_written_to_file += 1
 
             except Exception as e:
-                # print(e)
                 print(e)
 
         print("Complete. Found: {} Written: {}\n".format(str(df_enrich.shape[0]), num_records_written_to_file))
