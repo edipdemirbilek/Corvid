@@ -108,16 +108,14 @@ class WorkjamAPI(object):
 
     def get_event_location(self, header, event_json):
         if header:
-            return 'event_location_external_code,' \
-        + 'event_location_external_id,' \
+            return 'event_location_external_id,' \
         + 'event_location_id,' \
         + 'event_location_name,' \
         + 'event_location_timezone_id,' \
         + 'event_location_type'
 
         try:
-            return str(event_json['externalCode']) + ',' \
-        + str(event_json['externalId']) + ',' \
+            return str(event_json['externalId']) + ',' \
         + str(event_json['id']) + ',' \
         + str(event_json['name']) + ',' \
         + str(event_json['timeZoneId']) + ',' \
@@ -125,7 +123,7 @@ class WorkjamAPI(object):
 
         except Exception as e:
             print(e)
-            return ',,,,,'
+            return ',,,,'
 
     def get_event(self, header, event_json):
         if header:
@@ -372,18 +370,16 @@ class WorkjamAPI(object):
 
     def get_user_employment_location(self, header, counter, event_json):
         if header:
-            return 'user_employment_' + str(counter) + '_location_external_code,' \
-                 + 'user_employment_' + str(counter) + '_location_id,' \
+            return 'user_employment_' + str(counter) + '_location_id,' \
                  + 'user_employment_' + str(counter) + '_location_name,' \
                  + 'user_employment_' + str(counter) + '_location_type'
         try:
-            return event_json['externalCode'] + ',' \
-        + event_json['id'] + ',' \
+            return event_json['id'] + ',' \
         + event_json['name'] + ',' \
         + event_json['type']
         except Exception as e:
             print(e)
-            return ',,,'
+            return ',,'
 
     def get_user_current_employment(self, header, counter, event_json):
         if header:
@@ -395,27 +391,37 @@ class WorkjamAPI(object):
         + 'user_employment_' + str(counter) + '_system_generated'
 
         try:
+            primary = False
+            try:
+                if event_json['primary']:
+                    primary = event_json['primary']
+            except Exception as e:
+                primary = False
+
             return event_json['id'] + ',' \
         + self.get_user_employment_location(header, counter, event_json['location'])  + ',' \
         + self.get_user_employment_position(header, counter, event_json['position'])  + ',' \
-        + str(event_json['primary']) + ',' \
+        + str(primary) + ',' \
         + event_json['startDate'] + ',' \
         + str(event_json['systemGenerated'])
         except Exception as e:
             print(e)
             return ',,,,,,,,'
 
-    def get_user_next_two_employments(self, other_employments):
-        default = ',,,,,,,,,'
+    def get_user_three_employments(self, other_employments):
+        default = ',,,,,,,,'
 
         if len(other_employments) == 0:
-            return default + ',' + default
+            return default + ',' + default + ',' + default
 
         elif len(other_employments) == 1:
-            return default + ',' + other_employments[0]
+            return other_employments[0] + ',' + default + ',' + default
+
+        elif len(other_employments) == 2:
+            return  other_employments[0] + ',' + other_employments[1] + ',' + default
 
         else:
-            return ','.join(other_employments[:2])
+            return ','.join(other_employments[:3])
 
     def get_user_current_employments(self, header, event_json):
         if header:
@@ -425,17 +431,11 @@ class WorkjamAPI(object):
 
         try:
             other_employments = []
-            primary_emploment = ''
             for current_employment in event_json['currentEmployments']:
-                if current_employment['primary']:
-                    primary_emploment = self.get_user_current_employment(
-                            header, 0, current_employment)
-                else:
-                    other_employments.append(self.get_user_current_employment(
-                            header, 0, current_employment))
+                other_employments.append(self.get_user_current_employment(
+                        header, 0, current_employment))
 
-            return primary_emploment + ',' \
-                + self.get_user_next_two_employments(other_employments)
+            return self.get_user_three_employments(other_employments)
 
         except Exception as e:
             print(e)
@@ -523,13 +523,7 @@ class WorkjamAPI(object):
 
     def user_dto_to_csv(self, header, event_json):
         return self.get_user_id(header, event_json) + ',' \
-    + self.get_user_name(header, event_json) + ',' \
-    + self.get_user_first_name(header, event_json) + ',' \
-    + self.get_user_last_name(header, event_json) + ',' \
-    + self.get_user_birth_date(header, event_json) + ',' \
     + self.get_user_language(header, event_json) + ',' \
-    + self.get_user_phone_numbers(header, event_json) + ',' \
-    + self.get_user_email(header, event_json) + ',' \
     + self.get_user_status(header, event_json) + ',' \
     + self.get_user_current_employments(header, event_json) + ',' \
     + self.get_user_badge_level_ids(header, event_json)

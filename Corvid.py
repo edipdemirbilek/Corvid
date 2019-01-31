@@ -20,7 +20,7 @@ env = args[3]
 username = args[4]
 password = args[5]
 
-num_days = 1
+num_days = 2
 debug = False
 
 print("\n############# STEP 1: GET DATA FROM SUMOLOGIC SERVER #############\n")
@@ -30,7 +30,7 @@ get_data_params["sumologic_timestamp_dir"] = 'data/sumologic/timestamp/'
 get_data_params["sumologic_out_dir"] = 'data/sumologic/out/'
 get_data_params["sumologic_out_archive_dir"] = 'data/sumologic/out/archive/'
 
-GetData.run(num_days, acces_id, access_key, env, get_data_params, remove_timestamp_files=True)
+GetData.run(num_days, acces_id, access_key, env, get_data_params, remove_timestamp_files=False)
 
 print("\n############# STEP 2: CORRELATE DATA #############################\n")
 
